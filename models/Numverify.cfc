@@ -39,6 +39,12 @@ component {
 			throw(argumentCollection:exception);
 		}
 
+		if (!isStruct(apiResult)) {
+			exception.message = "Invalid Response from NumVerify"
+			exception.detail = serializeJSON(arguments.response);
+			throw(argumentCollection:exception);
+		}
+
 		return apiResult;
 	}	
 }
