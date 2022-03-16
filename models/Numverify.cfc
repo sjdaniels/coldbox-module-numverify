@@ -17,14 +17,14 @@ component {
 
 	private struct function call( required string path, struct params={} ){
 		var params = arguments.params;
-		http url="#settings.endpoint#/#arguments.path#" method="get" result="local.cfhttp" {
+		http url="#settings.endpoint##arguments.path#" method="get" result="local.cfhttp" {
 			httpparam type="url" name="access_key" value="#settings.accessKey#";
 			loop collection="#params#" item="local.val" index="local.key" {
 				httpparam type="url" name="#local.key#" value="#local.val#";
 			}
 		}
 
-		var req = "#settings.endpoint#/#arguments.path#?access_key=#settings.accessKey#";
+		var req = "#settings.endpoint##arguments.path#?access_key=#settings.accessKey#";
 		loop collection="#params#" item="local.val" index="local.key" {
 			req &= "&#local.key#=#local.val#";
 		}
