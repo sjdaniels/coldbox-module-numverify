@@ -24,24 +24,30 @@ component {
 			}
 		}
 
-		var result = parseResponse( local.cfhttp );
+		var req = "#settings.endpoint#/#arguments.path#?access_key=#settings.accessKey#";
+		loop collection="#params#" item="local.val" index="local.key" {
+			req &= "&#local.key#=#local.val#";
+		}
+		
+
+		var result = parseResponse( local.cfhttp, req );
 		return result;
 	}
 
-	private any function parseResponse(required struct response) {
+	private any function parseResponse(required struct response, required string req) {
 		var exception = { type:"Numverify" }
 		
 		try {
 			var apiResult = deserializeJSON(arguments.response.filecontent);
 		} catch (Any e) {
 			exception.message = "Deserialization Error"
-			exception.detail = serializeJSON(arguments.response);
+			exception.detail = serializeJSON({response:arguments.response, request:arguments.req});
 			throw(argumentCollection:exception);
 		}
 
 		if (!isStruct(apiResult)) {
 			exception.message = "Invalid Response from NumVerify"
-			exception.detail = serializeJSON(arguments.response);
+			exception.detail = serializeJSON({response:arguments.response, request:arguments.req});
 			throw(argumentCollection:exception);
 		}
 
